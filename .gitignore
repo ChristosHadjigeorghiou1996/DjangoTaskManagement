@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+django_task_management_venv/
 
 # Spyder project settings
 .spyderproject
