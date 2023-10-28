@@ -32,6 +32,6 @@ jobs:
       run: |
         if [ "$RUNNER.OS" == "Linux" ]; then
           python ./django_task_management/manage.py test
-        elif [ "$RUNNER.OS" == "Windows"]; then
+        elif [ "$RUNNER.OS" == "Windows" ]; then
           python .\django_task_management\manage.py test
         fi
