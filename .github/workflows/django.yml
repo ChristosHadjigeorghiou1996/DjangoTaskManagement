@@ -34,4 +34,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run tests
       run: |
-        python ${{ steps/manage_py_path.outputs.manage_py_path }} test
+        python ${{ steps.manage_py_path.outputs.manage_py_path }} test
