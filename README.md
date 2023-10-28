@@ -7,7 +7,7 @@ Create a Jira like task management system with django
 - Activate it with `.\VENV_NAME\Script\activate` or `source VENV_NAME/bin/activate` depending on OS
 - Create project by typing: `django-admin startproject PROJECT_NAME`
 - Start project by going to the project via `cd PROJECT_NAME` and `python manage.py runserver`
-- Create an app via `python manage.py startapp BASE_NAME` and update it in PROJECT_NAME/settings.py
+- Run `python manage.py makemigrations` and `python manage.py migrate` to populate local db.
 
 # Considerations
 The fundamental principle is to store as minimal information as possible - cannot leak the data that is not there.

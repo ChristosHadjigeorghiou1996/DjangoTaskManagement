@@ -1,4 +1,13 @@
 asgiref==3.7.2
+astroid==3.0.1
+colorama==0.4.6
+dill==0.3.7
 Django==4.2.6
+isort==5.12.0
+mccabe==0.7.0
+# pillow is for ImageField
+Pillow==10.1.0
+platformdirs==3.11.0
 sqlparse==0.4.4
+tomlkit==0.12.1
 tzdata==2023.3
