@@ -23,10 +23,12 @@ jobs:
         python-version: ${{ matrix.python }}
     - name: Set manage.py path
       id: manage_py_path
-      run: echo "::set-output name=manage_py_path::$(join-path '.\django_task_management\manage.py')"
-      if: runner.os == 'Windows'
-    - run: echo "::set-output name=manage_py_path::$(join-path './django_task_management/manage.py')"
-      if: runner.os != 'Windows'
+      run: |
+        if [ $RUNNER_OS == "Linux" ]; then
+          echo "::set-output name=manage_py_path::./django_task_management/manage.py"
+        elif [ $RUNNER_OS == "Windows" ]; then
+          echo "::set-output name=manage_py_path::.\django_task_management\manage.py"
+        fi
 
     - name: Install dependencies
       run: |
