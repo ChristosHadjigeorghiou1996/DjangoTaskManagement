@@ -12,6 +12,8 @@ Create a Jira like task management system with django
 # Considerations
 The fundamental principle is to store as minimal information as possible - cannot leak the data that is not there.
 
+Enable users to create tasks and export / import them without having to register in.
+
 # Initial Database schema
 Initial idea is to have user be able to create tasks, share them with colleagues and label tasks as not_started, started or finished.
 
