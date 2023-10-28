@@ -5,4 +5,5 @@ Information about the commits and the versions to keep track of the progress of 
 <li>1 - Create initial migration with models of User, Task, SharedTask, Comment and Label </li>
 <li>2 - Create initial commit to populate repository</li>
 <li>5 - Add test cases for the models </li>
+<li>9 - Create django.yml for github actions to run tests automatically </li>
 </ul>
