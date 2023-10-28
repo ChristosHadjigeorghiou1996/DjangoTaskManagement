@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, windows-latest]
         python: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
@@ -21,10 +21,17 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python }}
+    - name: Set manage.py path
+      id: manage_py_path
+      run: echo "::set-output name=manage_py_path::$(join-path '.\django_task_management\manage.py')"
+      if: runner.os == 'Windows'
+    - run: echo "::set-output name=manage_py_path::$(join-path './django_task_management/manage.py')"
+      if: runner.os != 'Windows'
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run tests
       run: |
-        python .\django_task_management\manage.py test
+        python ${{ steps/manage_py_path.outputs.manage_py_path }} test
