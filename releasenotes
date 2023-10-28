@@ -2,5 +2,6 @@
 Information about the commits and the versions to keep track of the progress of the software
 ## Version 1.0.0
 <ul>
+<li>1 - Create initial migration with models of User, Task, SharedTask, Comment and Label </li>
 <li>2 - Create initial commit to populate repository</li>
 </ul>
