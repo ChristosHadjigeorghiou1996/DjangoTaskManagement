@@ -5,6 +5,8 @@ Create a Jira like task management system with django
 - Clone the repository locally to your system: `git clone https://github.com/ChristosHadjigeorghiou1996/DjangoTaskManagement.git`.
 - Create virtual environment: `python -m venv VENV_NAME`
 - Activate it with `.\VENV_NAME\Script\activate` or `source VENV_NAME/bin/activate` depending on OS
+- Install requirements.txt `pip install -r requirements.txt`
+- Navigate to app folder and run `python manage.py test` to assert the correct installation of project.
 - Create project by typing: `django-admin startproject PROJECT_NAME`
 - Start project by going to the project via `cd PROJECT_NAME` and `python manage.py runserver`
 - Run `python manage.py makemigrations` and `python manage.py migrate` to populate local db.
