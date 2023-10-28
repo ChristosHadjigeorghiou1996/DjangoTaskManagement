@@ -41,7 +41,7 @@ class Task(models.Model):
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    due_date = models.DateField()
+    due_date = models.DateField(null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Not Started')
     labels = models.ManyToManyField(Label, related_name='tasks', blank=True)
     image_attachment = models.ImageField(upload_to='task_images/', null=True, blank=True)
@@ -63,7 +63,7 @@ class SharedTask(models.Model):
     Model to share task with different users
     """
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    patricipants = models.ManyToManyField(User, related_name="participants", blank=True )
+    participants = models.ManyToManyField(User, related_name="participants", blank=True )
     shared_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shared_tasks')
     shared_with = models.ManyToManyField(User, related_name='tasks_shared_with')
     shared_at = models.DateTimeField(auto_now_add=True)
