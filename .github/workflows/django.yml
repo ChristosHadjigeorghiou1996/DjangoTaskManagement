@@ -22,15 +22,6 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
-    - name: Set manage.py path
-      id: manage_py_path
-      run: |
-        if [ "${{ runner.os }}" == "Linux" ]; then
-          echo "::set-output name=manage_py_path::./django_task_management/manage.py"
-        elif [ "${{ runner.os }}" == "Windows" ]; then
-          echo "::set-output name=manage_py_path::.\django_task_management\manage.py"
-        fi
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -38,4 +29,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python ${{ steps.manage_py_path.outputs.manage_py_path }} test
+        if [ "$RUNNER.OS" == "Linux" ]; then
+          python ./django_task_management/manage.py test
+        elif [ "$RUNNER.OS" == "Windows"]; tjhen
+          python .\django_task_management\manage.py test
