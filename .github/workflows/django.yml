@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest]
         python: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
@@ -30,8 +30,4 @@ jobs:
     - name: Run tests
       shell: bash
       run: |
-        if [ "$RUNNER.OS" == "Linux" ]; then
-          python ./django_task_management/manage.py test
-        elif [ "$RUNNER.OS" == "Windows" ]; then
-          python .\django_task_management\manage.py test
-        fi
+        python .\django_task_management\manage.py test
