@@ -27,4 +27,4 @@ jobs:
 
     - name: Run tests
       run: |
-        python .\django_task_management\manage.py test
+        python .\django_task_management\manage.py test django_task_management
