@@ -1,0 +1,98 @@
+/* Reset some default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Apply a background color and padding to the header */
+.header__loggedIn {
+  background-color: #333;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Center the header content within a container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Style the logo */
+.header__logo {
+  text-decoration: none;
+  color: #fff;
+}
+
+.header__logo h2 {
+  font-size: 24px;
+}
+
+/* Style the search form */
+.header__search {
+  flex-grow: 1; /* Grow to fill available space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style the search input */
+.header__search input {
+  width: 200px;
+  height: 32px;
+  border: none;
+  border-radius: 16px;
+  padding: 8px 12px;
+  font-size: 16px;
+}
+
+/* Style the user section in the menu */
+.header__user {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+}
+
+.header__user .avatar {
+  margin-right: 10px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.header__user img {
+  width: 100px;
+  height: 100px;
+}
+
+.header__user p {
+  font-size: 18px;
+}
+
+.header__user span {
+  font-size: 14px;
+}
+
+/* Style the login link in the menu */
+.header__user a {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+}
+
+.header__user a img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.header__user a p {
+  font-size: 18px;
+}

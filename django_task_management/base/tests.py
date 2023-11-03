@@ -1,9 +1,10 @@
 from django.db import IntegrityError
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from .models import User, Comment, Label, SharedTask, Task
 
+from datetime import date
+from .helpers.CalendarHelper import CalendarHelper
 # Create your tests here.
 
 class UserModelTestCase(TestCase):
@@ -120,3 +121,62 @@ class SharedTaskModelTestCase(TestCase):
         shared_task.participants.add(self.user2, self.user3)
         self.assertIn(self.user2, shared_task.participants.all())
         self.assertIn(self.user3, shared_task.participants.all())
+
+class CalendarHelperTestCase(TestCase):
+
+    def test_get_last_day_of_month(self):
+        # January 2023
+        self.assertEqual(CalendarHelper.get_last_day_of_month(2023, 1), date(2023, 1, 31))
+        # February 2023 (non-leap year)
+        self.assertEqual(CalendarHelper.get_last_day_of_month(2023, 2), date(2023, 2, 28))
+        # February 2024 (leap year)
+        self.assertEqual(CalendarHelper.get_last_day_of_month(2024, 2), date(2024, 2, 29))
+        # November 2023
+        self.assertEqual(CalendarHelper.get_last_day_of_month(2023, 11), date(2023, 11, 30))
+
+    def test_get_next_month(self):
+        # February 28, 2023
+        self.assertEqual(CalendarHelper.get_next_month(date(2023, 2, 28)), "2023-03-01")
+        # November 30, 2022
+        self.assertEqual(CalendarHelper.get_next_month(date(2022, 11, 30)), "2022-12-01")
+        # December 31, 2023
+        self.assertEqual(CalendarHelper.get_next_month(date(2023, 12, 31)), "2024-01-01")
+
+    def test_get_previous_month(self):
+        # February 28, 2023
+        self.assertEqual(CalendarHelper.get_previous_month(date(2023, 2, 28)), "2023-01-01")
+        # November 30, 2022
+        self.assertEqual(CalendarHelper.get_previous_month(date(2022, 11, 30)), "2022-10-01")
+        # January 1, 2023
+        self.assertEqual(CalendarHelper.get_previous_month(date(2023, 1, 1)), "2022-12-01")
+
+    def test_get_next_month_leap_year(self):
+        # February 29, 2024 (leap year)
+        self.assertEqual(CalendarHelper.get_next_month(date(2024, 2, 29)), "2024-03-01")
+
+    def test_get_previous_month_leap_year(self):
+        # February 29, 2024 (leap year)
+        self.assertEqual(CalendarHelper.get_previous_month(date(2024, 2, 29)), "2024-01-01")
+
+    def test_populate_calendar_days_for_month(self):
+        # January 2023
+        january_2023 = date(2023, 1, 1)
+        expected_days_january_2023 = [
+            date(2023, 1, x) for x in range(1, 31+1)
+        ]
+        self.assertEqual(CalendarHelper.populate_calendar_days_for_month(january_2023), expected_days_january_2023)
+
+        # February 2024 (leap year)
+        february_2024 = date(2024, 2, 1)
+        expected_days_february_2024 = [
+            date(2024, 2, x) for x in range(1, 29+1)
+        ]
+    
+        self.assertEqual(CalendarHelper.populate_calendar_days_for_month(february_2024), expected_days_february_2024)
+
+        # November 2023
+        november_2023 = date(2023, 11, 1)
+        expected_days_november_2023 = [
+            date(2023, 11, x) for x in range(1, 30+1)
+        ]
+        self.assertEqual(CalendarHelper.populate_calendar_days_for_month(november_2023), expected_days_november_2023)

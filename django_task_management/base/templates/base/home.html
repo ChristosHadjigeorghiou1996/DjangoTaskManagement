@@ -1,0 +1,286 @@
+{% extends 'main.html' %} {% block content %}
+<style>
+  .home-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    gap: 20px; /* Adjust the gap size as needed */
+  }
+
+  .label {
+    background-color: #f2f2f2; /* Change the background color as needed */
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  .header {
+    font-size: 1.5rem;
+  }
+
+  .label__list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .label__list li {
+    margin: 10px 0;
+  }
+
+  .label__list a {
+    text-decoration: none;
+    color: #333; /* Change the link color as needed */
+    font-weight: bold;
+  }
+
+  .active a {
+    color: #ff6600; /* Change the active link color as needed */
+  }
+
+  .label__input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  /* task list with task cards and task info */
+  .tasks__list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .task-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 10px 10px 0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    cursor: pointer;
+  }
+
+  .task-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+
+  .task-description {
+    display: none;
+  }
+
+  .task-status {
+    font-weight: bold;
+    color: #0077b6;
+  }
+
+  .task-due-date {
+    font-weight: bold;
+    color: #e63946;
+  }
+
+  .task-created-at {
+    color: #888;
+    margin-top: 10px;
+  }
+
+  .task-id {
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+/* calendar */
+.calendar {
+    background-color: #f2f2f2; /* Change the background color as needed */
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  .calendar h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .month {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .month-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .month-navigation a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.5rem;
+  }
+
+  .day {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+.has-task {
+  position: relative; /* Create a relative positioning context for the tooltip */
+  background-color: #0077b6; /* Change the background color for highlighted dates */
+  color: #fff; /* Change the text color for highlighted dates */
+  border-radius: 50%; /* Apply a circular shape for highlighted dates */
+  padding: 5px; /* Adjust the padding for styling */
+  font-weight: bold; /* Adjust text styling for highlighted dates */
+}
+
+.has-task:hover::before {
+  content: attr(data-task-names); /* Display the task name as tooltip content */
+  position: absolute;
+  background-color: #333; /* Tooltip background color */
+  color: #fff; /* Tooltip text color */
+  padding: 5px 10px; /* Tooltip padding */
+  border-radius: 5px; /* Tooltip border radius */
+  bottom: 100%; /* Position the tooltip above the date */
+  left: 50%; /* Center the tooltip horizontally */
+  transform: translateX(-50%); /* Center the tooltip horizontally */
+  white-space: nowrap; /* Prevent text from wrapping */
+  display: none; /* Hide the tooltip by default */
+  z-index: 1; /* Ensure the tooltip appears above other elements */
+}
+
+.has-task:hover::before {
+  display: block; /* Show the tooltip when hovering */
+}
+
+/* show tasks deadlines below calendar */
+.task-deadline {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* right section - comments */
+.right__section {
+  width: 80%; /* Adjust the width as needed */
+  margin-right: 5%; /* Add a right margin to create space on the right side */
+}
+.comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f9f9f9; /* Change the background color as needed */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #0077b6;
+}
+
+.comment-title strong {
+    font-weight: bold;
+}
+
+.comment-body {
+    margin-top: 10px;
+}
+
+
+
+</style>
+<h2>Home template</h2>
+<div class="home-container">
+  <div class="left__section">
+  <div class="label">
+    <h3 class="header">Browse Labels</h3>
+    <ul class="label__list">
+      <li class="active">
+        <a>All <span>{{labels_with_task_count.count}}</span></a></li>
+        
+      {% for label in labels_with_task_count %}
+      <li class="label__input">{{label.name}} <span>{{label.task_count}}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="calendar">
+    <h3>Task Deadline Calendar</h3>
+    <div class="month-navigation">
+      <a href="?month={{ prev_month }}">&lt;</a>
+      <h2>{{ month_name }}</h2>
+      <a href="?month={{ next_month }}">&gt;</a>
+    </div>
+    <div class="month">
+      <div class="day">Sun</div>
+      <div class="day">Mon</div>
+      <div class="day">Tue</div>
+      <div class="day">Wed</div>
+      <div class="day">Thu</div>
+      <div class="day">Fri</div>
+      <div class="day">Sat</div>
+      {% for date_info in date_task_info %}
+      <div class="day{% if date_info.tasks %} has-task{% endif %}" data-task-names="{{ date_info.tasks|join:', ' }}">{{ date_info.date.day }}</div>
+      {% endfor %}
+    </div>
+    <div class="task-deadline">
+      {% for task in current_month_tasks  %}
+        <p>{{ task.title }} - {{ task.due_date }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+  <div class="middle__section">
+    <h3 class="header"> Personal Tasks</h3>
+    {% if tasks.count == 0 %}
+    <h4 class="header__subheader">No tasks have been created.</h4>
+    {% elif tasks.count == 1 %}
+    <h4 class="header__subheader">1 task has been created.</h4>
+    {% else %}
+    <h4 class="header__subheader">{{tasks.count}} tasks have been created</h4>
+    {% endif %}
+    <ul class="tasks__list">
+      {% for task in tasks_by_user %}
+      <li class="task-card" onclick="toggleDescription(this)" title="Click to toggle description">
+        <p class="task-title">{{ task.title }}</p>
+        <p class="task-description">Description {{ task.description }}</p>
+        <p class="task-status">Status: {{ task.status }}</p>
+        {% if task.due_date %}
+          <p class="task-due-date">Due Date: {{ task.due_date }}</p>
+        {% endif %}
+        <p class="task-created-at">Created: {{ task.created_at|timesince }} ago</p>
+        <!-- <p class="task-id">Task ID: {{ task.id }}</p> -->
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="right__section">
+    <h3 class="header">Recent Comments</h3>
+    <ul class="comment-list">
+        {% for comment in all_user_comments %}
+            <li class="comment-item">
+                <p class="comment-author">@{{comment.author.name}}</p>
+                <p class="comment-title"><span> commented on</span> <strong>{{ comment.task.title }}</strong></p>
+                {% if comment.body|length > 100 %}
+                    <p class="comment-body">{{ comment.body|slice:":100" }}{% if comment.body|length > 100 %}...{% endif %}</p>
+                {% else %}
+                    <p class="comment-body">{{ comment.body }}</p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<script>
+  function toggleDescription(taskCard) {
+    var description = taskCard.querySelector('.task-description');
+    if (description.style.display === 'none' || description.style.display === '') {
+      description.style.display = 'block';
+    } else {
+      description.style.display = 'none';
+    }
+  }
+  </script>
+{% endblock content %}
