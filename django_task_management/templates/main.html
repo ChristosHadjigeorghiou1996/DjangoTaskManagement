@@ -7,11 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="{% static 'styles/main.css' %}" />
-    <title>Task management - Monitor tasks efficiently and effectively!</title>
+    <title>Task management</title>
   </head>
 
   <body>
+    <h1>Task Management - monitor tasks efficiently and effectively!</h1>
     {% include 'navbar.html' %}
-    <p>Welcome</p>
+    {% if request.user.is_authenticated %}
+    <p>Welcome {{request.user}}</p>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
   </body>
 </html>

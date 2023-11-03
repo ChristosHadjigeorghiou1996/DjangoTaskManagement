@@ -1,4 +1,8 @@
 body {
-    background-color: rgb(160, 175, 170);
-  }
-  
+  background-color: rgb(240, 175, 170);
+}
+
+.home__container {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+}

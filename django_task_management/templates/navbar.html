@@ -1,6 +1,32 @@
 {% load static %}
-<header>
-    <div>
-        <h1>Task Management navbar</h1>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/navbar.css' %}">
+<header class="header">
+  <div class="container">
+    <div class="header__left">
+      <a href="{% url 'home' %}" class="header__logo">
+        <h2>Task Management</h2>
+      </a>
     </div>
+    <div class="header__center">
+      <div class="header__search">
+        <label for="search-input" class="header__search-label">Search for tasks</label>
+        <form method="GET" action="{% url 'home' %}">
+          <input id="search-input" class="header__search-input" name="q" placeholder="Task.." />
+        </form>
+      </div>
+    </div>
+    <div class="header__right">
+      <div class="header__user">
+        {% if request.user.is_authenticated %}
+          <div class="header__avatar">
+            <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.username }} Profile Picture" width="50" height="50"/>
+          </div>
+          <div class="header__user-details">
+            <p class="header__username">{{ request.user }}</p>
+            <p class="header__user-username">@{{ request.user.username }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </header>
