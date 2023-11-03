@@ -8,9 +8,12 @@
       </a>
     </div>
     <div class="header__center">
-      <form method="GET" action="{% url 'home' %}">
-        <input class="header__search-input" name="q" placeholder="Search for tasks..." />
-      </form>
+      <div class="header__search">
+        <label for="search-input" class="header__search-label">Search for tasks</label>
+        <form method="GET" action="{% url 'home' %}">
+          <input id="search-input" class="header__search-input" name="q" placeholder="Task.." />
+        </form>
+      </div>
     </div>
     <div class="header__right">
       <div class="header__user">

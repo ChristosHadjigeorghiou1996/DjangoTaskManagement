@@ -33,12 +33,18 @@
   font-size: 24px;
 }
 
-/* Style the search form */
+.header__search-label {
+  font-size: 18px;
+  color: #fff;
+  margin-right: 10px;
+}
+
 .header__search {
-  flex-grow: 1; /* Grow to fill available space */
+  flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 /* Style the search input */
