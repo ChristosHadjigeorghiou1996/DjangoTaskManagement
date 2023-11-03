@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Callable
+from typing import Callable, Union
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest 
 from django.db.models import Count
@@ -11,7 +11,7 @@ from .models import Task, Label, Comment
 from .helpers.CalendarHelper import CalendarHelper
 
 # create custom decorator for views for authenticated or temporary users
-def custom_login_required(view_func: Callable) -> Callable|HttpResponseRedirect:
+def custom_login_required(view_func: Callable) -> Union[Callable, HttpResponseRedirect]:
     @wraps(view_func)
     def _wrapped_view(request: HttpRequest, *args, **kwargs):
         # Check if the user is authenticated or a temporary user
