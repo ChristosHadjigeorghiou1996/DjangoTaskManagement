@@ -19,7 +19,11 @@
       <div class="header__user">
         {% if request.user.is_authenticated %}
           <div class="header__avatar">
-            <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.username }} Profile Picture" width="50" height="50"/>
+            {% if request.user.profile_picture %}
+              <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.username }} Profile Picture" width="50" height="50"/>
+            {% else %}
+              <img src="{% static 'images/profile_pictures/dummy-avatar.svg' %}" alt="Dummy Profile Picture" width="50" height="50"/>
+            {% endif %}
           </div>
           <div class="header__user-details">
             <p class="header__username">{{ request.user }}</p>

@@ -1,12 +1,14 @@
 from functools import wraps
 from typing import Callable, Union
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect, HttpRequest 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest, Http404, JsonResponse
 from django.db.models import Count
-
+# use flash messages for error
+from django.contrib import messages
+  
 from datetime import date
 
-from .models import Task, Label, Comment
+from .models import Task, Label, Comment, SharedTask
 
 from .helpers.CalendarHelper import CalendarHelper
 
@@ -66,3 +68,32 @@ def home(request: HttpRequest) -> HttpResponse:
         "all_user_comments": all_user_comments
     }
     return render(request, 'base/home.html', context)
+
+def label(request: HttpRequest, id: str) -> HttpResponse:
+    try:
+        specific_label = Label.objects.get(pk=id)
+    except Label.DoesNotExist:
+        raise Http404("Label does not exist")
+
+    tasks_by_user_with_label = Task.objects.filter(created_by=request.user, labels=specific_label).order_by("due_date")
+    tasks_shared_to_user_with_label = SharedTask.objects.filter(task__labels=specific_label, participants=request.user)
+    combined_tasks = (tasks_by_user_with_label | tasks_shared_to_user_with_label)
+    context = {
+        'label': specific_label,
+        'combined_tasks': combined_tasks
+    }
+    return render(request, 'base/label.html', context)
+
+def update_task_status(request, task_id: str):
+    if request.method == 'POST':
+        new_status = request.POST.get('new_status')
+        task = get_object_or_404(Task, pk=task_id)
+        previous_status = task.status
+        task.status = new_status
+        task.save()
+        print(request, f"Task status changed from {previous_status} be {new_status}")
+        return HttpResponse(JsonResponse({'status': 'success'}), content_type="application/json")
+
+    else:
+        print(request, "Task could not be changed")
+        return JsonResponse({'status': 'error'})

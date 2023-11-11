@@ -91,36 +91,28 @@ class SharedTaskModelTestCase(TestCase):
         self.user1 = User.objects.create_user(username="user1", password="password1")
         self.user2 = User.objects.create_user(username="user2", password="password2")
         self.user3 = User.objects.create_user(username="user3", password="password3")
-        self.task = Task.objects.create(
+        self.shared_task = SharedTask.objects.create(
             title="Task",
             description="Test task",
             created_by=self.user1,
-            due_date="2023-10-28"
+            due_date="2023-10-28",
+            shared_by=self.user1,            
         )
-        self.shared_task = SharedTask.objects.create(
-            task=self.task,
-            shared_by=self.user1,
-        )
+        self.shared_task.shared_with.set([self.user2])
 
     def test_shared_task_creation(self):
-        self.assertEqual(self.shared_task.task, self.task)
         self.assertEqual(self.shared_task.shared_by, self.user1)
 
     def test_invalid_shared_task_integrity_error(self):
         with self.assertRaises(IntegrityError):
             shared_task = SharedTask.objects.create(
-                task=None,
-                shared_by=self.user2,
+                shared_by=None
             )
 
     def test_shared_task_with_participants(self):
-        shared_task = SharedTask.objects.create(
-            task=self.task,
-            shared_by=self.user1,
-        )
-        shared_task.participants.add(self.user2, self.user3)
-        self.assertIn(self.user2, shared_task.participants.all())
-        self.assertIn(self.user3, shared_task.participants.all())
+        self.shared_task.shared_with.set([self.user2, self.user3])
+        self.assertIn(self.shared_task, self.user2.tasks_shared_with.all())
+        self.assertIn(self.shared_task, self.user3.tasks_shared_with.all())
 
 class CalendarHelperTestCase(TestCase):
 
