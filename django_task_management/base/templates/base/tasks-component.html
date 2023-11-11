@@ -1,0 +1,291 @@
+<style>
+  .title__section {
+    padding: 10px;
+  }
+
+  .title__section h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .title__section h4 {
+    display: flex;
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .middle__section {
+    display: flex;
+  }
+
+  .tasks__container {
+    flex: 1; /* This allows each container to take equal width */
+    padding: 10px;
+    margin: 0 10px; /* Adjust the margin as needed for spacing between columns */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+
+  .tasks__container h4 {
+    font-weight: bold;
+    text-align: center; /* Center the column title */
+  }
+
+  .tasks__list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tasks__column {
+    flex: 1;
+    padding: 0 10px;
+  }
+
+  .task-card {
+    list-style: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    cursor: pointer;
+  }
+
+  .task-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+
+  .task-description {
+    display: none;
+  }
+
+  .task-due-date {
+    font-weight: bold;
+    color: #e63946;
+  }
+
+  .task-created-at {
+    color: #888;
+    margin-top: 10px;
+  }
+
+  .task-id {
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  /* Define different styles for each status column */
+  .tasks__column.NotStarted .task-card {
+    border-color: #ccc; /* Update with your preferred color */
+  }
+
+  .tasks__column.Started .task-card {
+    border-color: #0077b6; /* Update with your preferred color */
+  }
+
+  .tasks__column.Completed .task-card {
+    border-color: #28a745; /* Update with your preferred color */
+  }
+
+  /* Add a highlight style when dragging tasks */
+  .task-card.dragging {
+    background-color: #f1f1f1;
+  }
+</style>
+
+<div class="title__section">
+  <h3>Personal Tasks</h3>
+  {% if tasks_by_user.count == 0 %}
+  <h4>No tasks have been created.</h4>
+  {% elif tasks_by_user.count == 1 %}
+  <h4>1 task has been created.</h4>
+  {% else %}
+  <h4">
+    {{ tasks_by_user.count }} tasks have been created
+  </h4>
+  {% endif %}
+</div>
+<div class="middle__section">
+    <div class="tasks__container" ondrop="drop(event, 'NotStarted')" ondragover="allowDrop(event)">
+        <ul class="tasks__column NotStarted">
+      <h4>Not Started</h4>
+      {% for task in tasks_by_user %} {% if task.status == "NotStarted" %}
+      <li
+        class="task-card"
+        draggable="true"
+        ondragstart="drag(event)"
+        data-task-id="{{ task.id }}"
+        data-task-status="{{ task.status }}"
+        onclick="toggleDescription(this)"
+        title="Click to toggle description"
+      >
+        <p class="task-title">{{ task.title }}</p>
+        <p class="task-description">Description {{ task.description }}</p>
+        <p class="task-status">Status: {{ task.status }}</p>
+        {% if task.due_date %}
+        <p class="task-due-date">Due Date: {{ task.due_date }}</p>
+        {% endif %}
+        <p class="task-created-at">
+          Created: {{ task.created_at|timesince }} ago
+        </p>
+      </li>
+      {% endif %} {% endfor %}
+    </ul>
+  </div>
+
+  <div class="tasks__container" ondrop="drop(event, 'Started')" ondragover="allowDrop(event)">
+    <ul class="tasks__column Started">
+      <h4>In Progress</h4>
+      {% for task in tasks_by_user %} {% if task.status == "Started" %}
+      <li
+        class="task-card"
+        draggable="true"
+        ondragstart="drag(event)"
+        data-task-id="{{ task.id }}"
+        data-task-status="{{ task.status }}"
+        onclick="toggleDescription(this)"
+        title="Click to toggle description"
+      >
+        <p class="task-title">{{ task.title }}</p>
+        <p class="task-description">Description {{ task.description }}</p>
+        <p class="task-status">Status: {{ task.status }}</p>
+        {% if task.due_date %}
+        <p class="task-due-date">Due Date: {{ task.due_date }}</p>
+        {% endif %}
+        <p class="task-created-at">
+          Created: {{ task.created_at|timesince }} ago
+        </p>
+      </li>
+      {% endif %} {% endfor %}
+    </ul>
+  </div>
+
+  <div class="tasks__container" ondrop="drop(event, 'Completed')" ondragover="allowDrop(event)">
+    <ul class="tasks__column Completed">
+      <h4>Completed</h4>
+      {% for task in tasks_by_user %} {% if task.status == "Completed" %}
+      <li
+        class="task-card"
+        draggable="true"
+        ondragstart="drag(event)"
+        data-task-id="{{ task.id }}"
+        data-task-status="{{ task.status }}"
+        onclick="toggleDescription(this)"
+        title="Click to toggle description"
+      >
+        <p class="task-title">{{ task.title }}</p>
+        <p class="task-description">Description {{ task.description }}</p>
+        <p class="task-status">Status: {{ task.status }}</p>
+        {% if task.due_date %}
+        <p class="task-due-date">Due Date: {{ task.due_date }}</p>
+        {% endif %}
+        <p class="task-created-at">
+          Created: {{ task.created_at|timesince }} ago
+        </p>
+      </li>
+      {% endif %} {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const STATUS_CHOICES = [
+    { value: 'NotStarted', label: 'NotStarted' },
+    { value: 'Started', label: 'Started' },
+    { value: 'Completed', label: 'Completed' },
+    ];
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+  
+    function drag(event) {
+      event.dataTransfer.setData("task_id", event.target.dataset.taskId);
+      event.dataTransfer.setData("task_status", event.target.dataset.taskStatus);
+      event.target.classList.add("dragging");
+    }
+  
+    function drop(event, newStatus) {
+        event.preventDefault();
+        const task_id = event.dataTransfer.getData("task_id");
+        const task_status = event.dataTransfer.getData("task_status");
+
+        // Check if the task is being moved to a different status column
+        if (task_status !== newStatus) {
+            // Change the task's status on the server or update it in your data structure
+            // Example: You can make an AJAX call to update the task status
+            updateTaskStatus(task_id, newStatus, function(response) {
+            if (response.status === 'success') {
+                // Task status updated successfully
+                // Add the task to the new column
+                // Log the entire document to check if the task element is present
+                const newTaskElement = document.querySelector(`[data-task-id="${task_id}"]`);
+                const newColumn = findColumnByStatus(newStatus);
+
+                if (newTaskElement && newColumn) {
+                    newTaskElement.dataset.taskStatus = newStatus;
+                    newTaskElement.querySelector('.task-status').textContent = `Status: ${newStatus}`
+                    newColumn.appendChild(newTaskElement);
+                } else {
+                console.error('Task element or new column not found.');
+                }
+            } else {
+                // Handle error
+                console.error('Error updating task status');
+            }
+            // Remove the dragging style
+            document.querySelector(`[data-task-id="${task_id}"]`).classList.remove("dragging");
+            });
+        }
+
+
+    }
+
+  
+    function updateTaskStatus(taskId, newStatus, callback) {
+    $.ajax({
+      url: `/update_task_status/${taskId}/`,
+      type: 'POST',
+      data: {
+        new_status: newStatus,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+      },
+      success: function(response) {
+      callback(response);
+    },
+      error: function() {
+        // Handle network error
+        console.error('Network error');
+      },
+    });
+  }
+
+  // Add a click event listener to the task cards for changing status
+  $(document).on('click', '.task-card', function() {
+    console.log(this)
+    const taskId = $(this).data('task-id');
+    const currentStatus = $(this).data('task-status');
+    
+    // Prompt user to select a new status
+    const newStatus = prompt('Enter the new status (NotStarted, Started, Completed):', currentStatus);
+    if (newStatus && newStatus !== currentStatus) {
+      // Update the task status
+      updateTaskStatus(taskId, newStatus);
+    }
+  });
+
+
+function findColumnByStatus(status) {
+  const statusLabel = STATUS_CHOICES.find(choice => choice.value === status)?.label;
+  return document.querySelector(`.tasks__column.${statusLabel}`);
+}
+  </script>

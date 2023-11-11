@@ -1,0 +1,104 @@
+[
+  {
+    "model": "base.user",
+    "pk": 1,
+    "fields": {
+      "username": "user1",
+      "name": "User One",
+      "bio": "Bio for User One",
+      "profile_picture": null
+    }
+  },
+  {
+    "model": "base.label",
+    "pk": 1,
+    "fields": {
+      "name": "Label 1"
+    }
+  },
+  {
+    "model": "base.task",
+    "pk": 1,
+    "fields": {
+      "title": "Task 1",
+      "description": "Description for Task 1",
+      "created_at": "2023-10-30T12:00:00Z",
+      "created_by": 1,
+      "due_date": "2023-12-31",
+      "status": "Not Started",
+      "labels": [1],
+      "image_attachment": null,
+      "assigned_to": []
+    }
+  },
+  {
+    "model": "base.sharedtask",
+    "pk": 1,
+    "fields": {
+      "shared_by": 1,
+      "shared_with": []
+    }
+  },
+  {
+    "model": "base.comment",
+    "pk": 1,
+    "fields": {
+      "task": 1,
+      "author": 1,
+      "created_at": "2023-11-30T12:00:00Z",
+      "body": "Comment body for Task 1",
+      "image_attachment": null
+    }
+  },
+  {
+    "model": "base.user",
+    "pk": 2,
+    "fields": {
+      "username": "user2",
+      "name": "User Two",
+      "bio": "Bio for User Two",
+      "profile_picture": null
+    }
+  },
+  {
+    "model": "base.label",
+    "pk": 2,
+    "fields": {
+      "name": "Label 2"
+    }
+  },
+  {
+    "model": "base.task",
+    "pk": 2,
+    "fields": {
+      "title": "Task 2",
+      "description": "Description for Task 2",
+      "created_at": "2023-11-30T12:00:00Z",
+      "created_by": 2,
+      "due_date": "2023-12-15",
+      "status": "Started",
+      "labels": [2],
+      "image_attachment": null,
+      "assigned_to": [1]
+    }
+  },
+  {
+    "model": "base.sharedtask",
+    "pk": 2,
+    "fields": {
+      "shared_by": 1,
+      "shared_with": [2]
+    }
+  },
+  {
+    "model": "base.comment",
+    "pk": 2,
+    "fields": {
+      "task": 2,
+      "author": 1,
+      "created_at": "2023-11-30T12:00:00Z",
+      "body": "Comment body for Task 2",
+      "image_attachment": null
+    }
+  }
+]
