@@ -66,51 +66,6 @@
     align-items: center;
   }
 
-  .tasks__list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .task-card {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px 10px 10px 0;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    cursor: pointer;
-  }
-
-  .task-title {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-  }
-
-  .task-description {
-    display: none;
-  }
-
-  .task-status {
-    font-weight: bold;
-    color: #0077b6;
-  }
-
-  .task-due-date {
-    font-weight: bold;
-    color: #e63946;
-  }
-
-  .task-created-at {
-    color: #888;
-    margin-top: 10px;
-  }
-
-  .task-id {
-    color: #555;
-    font-size: 0.9rem;
-  }
-
 /* calendar */
 .calendar {
     background-color: #e2e2e2; 
@@ -264,30 +219,9 @@
     </div>
   </div>
 </div>
-  <div class="middle__section">
-    <h3 class="header"> Personal Tasks</h3>
-    {% if tasks_by_user.count == 0 %}
-    <h4 class="header__subheader">No tasks have been created.</h4>
-    {% elif tasks_by_user.count == 1 %}
-    <h4 class="header__subheader">1 task has been created.</h4>
-    {% else %}
-    <h4 class="header__subheader">{{tasks_by_user.count}}  tasks have been created</h4>
-    {% endif %}
-    <ul class="tasks__list">
-      {% for task in tasks_by_user %}
-      <li class="task-card" onclick="toggleDescription(this)" title="Click to toggle description">
-        <p class="task-title">{{ task.title }}</p>
-        <p class="task-description">Description {{ task.description }}</p>
-        <p class="task-status">Status: {{ task.status }}</p>
-        {% if task.due_date %}
-          <p class="task-due-date">Due Date: {{ task.due_date }}</p>
-        {% endif %}
-        <p class="task-created-at">Created: {{ task.created_at|timesince }} ago</p>
-        <!-- <p class="task-id">Task ID: {{ task.id }}</p> -->
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+<div>
+  {% include 'base/tasks-component.html' %}
+</div>
   <div class="right__section">
     <h3 class="header">Recent Comments</h3>
     <ul class="comment-list">

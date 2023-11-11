@@ -11,6 +11,10 @@ Create a Jira like task management system with django
 - Start project by going to the project via `cd PROJECT_NAME` and `python manage.py runserver`
 - Run `python manage.py makemigrations` and `python manage.py migrate` to populate local db.
 
+# Loading dummy data
+- 'base/sample_data/sample_data.json' includes some dummy data to start/test the project.
+- After running migrations, load them using `python manage.py loaddata base\sample_data\sample_data.json`
+
 # Considerations
 The fundamental principle is to store as minimal information as possible - cannot leak the data that is not there.
 
