@@ -25,6 +25,11 @@ Initial idea is to have user be able to create tasks, share them with colleagues
 
 ![First version of database schema](src/db_schemas/database_schema_version_1.png)
 
+
+# Features
+Initial view of home page with flash messages when dragging and dropping the tasks
+![First version of home view](src/progress/flash%20messages.png)
+
 # Final notes
 This project is just a simple task management to get accustomed with django.
 
