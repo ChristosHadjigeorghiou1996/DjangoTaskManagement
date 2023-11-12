@@ -91,9 +91,16 @@ def update_task_status(request, task_id: str):
         previous_status = task.status
         task.status = new_status
         task.save()
-        print(request, f"Task status changed from {previous_status} be {new_status}")
-        return HttpResponse(JsonResponse({'status': 'success'}), content_type="application/json")
+        messages.success(request, 'Task status updated successfully.')
+        response_data = {
+            'status': 'success',
+            'message': f"Task status changed from {previous_status} be {new_status}",
+        }
 
     else:
-        print(request, "Task could not be changed")
-        return JsonResponse({'status': 'error'})
+        messages.error(request, 'Task status could not be changed.')
+        response_data = {
+            'status': 'error',
+            'message': f"Task status could not be changed",
+        }
+    return JsonResponse(response_data)
