@@ -99,6 +99,20 @@
   .task-card.dragging {
     background-color: #f1f1f1;
   }
+
+  .flash-message {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    padding: 10px;
+    background-color: rgba(76, 175, 80, 1);
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    display: none;
+  }
 </style>
 
 <div class="title__section">
@@ -112,6 +126,11 @@
     {{ tasks_by_user.count }} tasks have been created
   </h4>
   {% endif %}
+
+  <!-- flash message placeholder -->
+  <div id="flash-message" class="flash-message">
+  </div>  
+
 </div>
 <div class="middle__section">
     <div class="tasks__container" ondrop="drop(event, 'NotStarted')" ondragover="allowDrop(event)">
@@ -235,12 +254,17 @@
                     newTaskElement.dataset.taskStatus = newStatus;
                     newTaskElement.querySelector('.task-status').textContent = `Status: ${newStatus}`
                     newColumn.appendChild(newTaskElement);
-                } else {
-                console.error('Task element or new column not found.');
-                }
-            } else {
-                // Handle error
-                console.error('Error updating task status');
+                    }
+            }
+            // display message according to request, can be success or error
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                flashMessage.style.display = 'block';
+                flashMessage.innerText = response.message;
+                // make flash message disappear after 3 seconds
+                setTimeout(function () {
+                    flashMessage.style.display = 'none';
+                }, 3000);
             }
             // Remove the dragging style
             document.querySelector(`[data-task-id="${task_id}"]`).classList.remove("dragging");
