@@ -2,13 +2,13 @@ from functools import wraps
 from typing import Callable, Union
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest, Http404, JsonResponse
-from django.db.models import Count
+from django.db.models import Count, Q, Sum
 # use flash messages for error
 from django.contrib import messages
   
 from datetime import date
 
-from .models import Task, Label, Comment, SharedTask
+from .models import Task, Label, Comment
 
 from .helpers.CalendarHelper import CalendarHelper
 
@@ -42,8 +42,13 @@ def home(request: HttpRequest) -> HttpResponse:
     calendar_days = CalendarHelper.populate_calendar_days_for_month(current_date)
 
     tasks_by_user = Task.objects.filter(created_by=request.user).order_by("due_date")
-    labels_with_task_count = Label.objects.annotate(task_count=Count('tasks')).order_by('name')
-    
+    tasks_shared_with_user = Task.objects.filter(shared_with=request.user).order_by("due_date")
+    tasks_including_user = tasks_by_user | tasks_shared_with_user
+
+    labels_with_task_count = Label.objects.annotate(tasks_relating_to_user_count=Count('tasks', filter=Q(tasks__created_by=request.user) | Q(tasks__shared_with=request.user)))
+    # Sum up total_task_count for all labels
+    total_task_count_labels_relating_to_user = labels_with_task_count.aggregate(Sum('tasks_relating_to_user_count'))['tasks_relating_to_user_count__sum']
+   
     # Create a list of dictionaries for each date and its tasks
     date_task_info = [{'date': day, 'tasks': [task.title for task in tasks_by_user if task.due_date == day]} for day in calendar_days]
 
@@ -58,8 +63,9 @@ def home(request: HttpRequest) -> HttpResponse:
     all_user_comments = user_comments_set | other_user_comments_set
 
     context = {
-        "tasks_by_user":tasks_by_user,
+        "tasks_including_user":tasks_including_user,
         "current_month_tasks": current_month_tasks,
+        "total_task_count_labels_relating_to_user": total_task_count_labels_relating_to_user,
         "labels_with_task_count": labels_with_task_count,
         'month_name': current_date.strftime("%B"),
         "date_task_info" : date_task_info,
@@ -71,16 +77,21 @@ def home(request: HttpRequest) -> HttpResponse:
 
 def label(request: HttpRequest, id: str) -> HttpResponse:
     try:
-        specific_label = Label.objects.get(pk=id)
+        active_label = Label.objects.get(pk=id)
     except Label.DoesNotExist:
         raise Http404("Label does not exist")
 
-    tasks_by_user_with_label = Task.objects.filter(created_by=request.user, labels=specific_label).order_by("due_date")
-    tasks_shared_to_user_with_label = SharedTask.objects.filter(task__labels=specific_label, participants=request.user)
-    combined_tasks = (tasks_by_user_with_label | tasks_shared_to_user_with_label)
+    labels_with_task_count = Label.objects.annotate(tasks_relating_to_user_count=Count('tasks', filter=Q(tasks__created_by=request.user) | Q(tasks__shared_with=request.user)))
+    total_task_count_labels_relating_to_user = labels_with_task_count.aggregate(Sum('tasks_relating_to_user_count'))['tasks_relating_to_user_count__sum']
+    tasks_by_user_with_label = Task.objects.filter(created_by=request.user, labels=active_label).order_by("due_date")
+    tasks_shared_by_others_with_label = Task.objects.filter(shared_with=request.user, labels=active_label).order_by("due_date")
+
+    tasks_including_user = (tasks_by_user_with_label | tasks_shared_by_others_with_label)
     context = {
-        'label': specific_label,
-        'combined_tasks': combined_tasks
+        'active_label': active_label,
+        'total_task_count_labels_relating_to_user':total_task_count_labels_relating_to_user,
+        "labels_with_task_count": labels_with_task_count,
+        "tasks_including_user":tasks_including_user,
     }
     return render(request, 'base/label.html', context)
 

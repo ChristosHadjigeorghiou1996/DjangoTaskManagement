@@ -1,0 +1,81 @@
+<style>
+  .label {
+    background-color: #f2f2f2; /* Change the background color as needed */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+
+  .label__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-rows: repeat(auto-fill, minmax(1fr, 1fr));
+  }
+
+  .label__list li {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .label__list a {
+    text-decoration: none;
+    color: #333; /* Change the link color as needed */
+    font-weight: bold;
+    transition: color 0.2s; /* Add a smooth color transition on hover */
+  }
+
+  .label__list a:hover {
+    color: #0077b6;
+    cursor: pointer;
+    
+  }
+
+  .label__list a span {
+    background-color: #0077b6;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-left: 15px;
+  }
+
+  .active a {
+    color: #ff6600; /* Change the active link color as needed */
+  }
+
+  .label__input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+<div class="label">
+  <h3 class="header">Browse Labels</h3>
+  <ul class="label__list">
+    {% if not active_label %}
+    <li class="active">
+    {% else %}
+    <li class="label__input">
+    {% endif %}
+      <a href="{% url 'home' %}"
+        >All <span>{{total_task_count_labels_relating_to_user}}</span></a
+      >
+    </li>
+
+    {% for label in labels_with_task_count %}
+    {% if label == active_label %}
+    <li class="active">
+    {% else %}
+    <li class="label__input">
+    {% endif %}
+      <a href="{% url 'label' label.id %}"
+        >{{label.name}} <span>{{label.tasks_relating_to_user_count}}</span></a
+      >
+    </li>
+
+    {% endfor %}
+  </ul>
+</div>

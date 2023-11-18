@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.test import TestCase
 from django.contrib.auth import authenticate
-from .models import User, Comment, Label, SharedTask, Task
+from .models import User, Comment, Label, Task
 
 from datetime import date
 from .helpers.CalendarHelper import CalendarHelper
@@ -26,13 +26,18 @@ class UserModelTestCase(TestCase):
 class TaskModelTestCase(TestCase):
     def setUp(self) -> None:
         self.user = User.objects.create_user(username="testUser", password="testPassword")
+        self.user2 = User.objects.create_user(username="testUser2", password="testPassword2")
         self.task = Task.objects.create(
             title = "Task",
             description = "Test task",
             created_by = self.user,
             due_date = "2023-10-28"
         )
-    
+
+        self.label = Label.objects.create(name='Test Label')
+        self.task.labels.add(self.label)
+        self.task.shared_with.add(self.user2)
+
     def test_task_creation(self) -> None:
         self.assertEqual(self.task.title, "Task")
         self.assertEqual(self.task.description, "Test task")
@@ -44,6 +49,13 @@ class TaskModelTestCase(TestCase):
             invalid_task = Task.objects.create(
                 title = "Task"
             )
+
+    def test_shared_with_field(self):
+        self.assertEqual(list(self.task.shared_with.all()), [self.user2])
+
+    def test_created_by_field(self):
+        self.assertEqual(self.task.created_by, self.user)
+
 
 class LabelModelTestCase(TestCase):
     def setUp(self) -> None:
@@ -86,33 +98,6 @@ class CommentModelTestCase(TestCase):
                 body=None
             )
 
-class SharedTaskModelTestCase(TestCase):
-    def setUp(self):
-        self.user1 = User.objects.create_user(username="user1", password="password1")
-        self.user2 = User.objects.create_user(username="user2", password="password2")
-        self.user3 = User.objects.create_user(username="user3", password="password3")
-        self.shared_task = SharedTask.objects.create(
-            title="Task",
-            description="Test task",
-            created_by=self.user1,
-            due_date="2023-10-28",
-            shared_by=self.user1,            
-        )
-        self.shared_task.shared_with.set([self.user2])
-
-    def test_shared_task_creation(self):
-        self.assertEqual(self.shared_task.shared_by, self.user1)
-
-    def test_invalid_shared_task_integrity_error(self):
-        with self.assertRaises(IntegrityError):
-            shared_task = SharedTask.objects.create(
-                shared_by=None
-            )
-
-    def test_shared_task_with_participants(self):
-        self.shared_task.shared_with.set([self.user2, self.user3])
-        self.assertIn(self.shared_task, self.user2.tasks_shared_with.all())
-        self.assertIn(self.shared_task, self.user3.tasks_shared_with.all())
 
 class CalendarHelperTestCase(TestCase):
 
