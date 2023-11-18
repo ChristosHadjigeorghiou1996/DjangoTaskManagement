@@ -1,0 +1,40 @@
+{% extends 'main.html' %} {% block content %}
+<style>
+  .label-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .label-info {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .label-title {
+    font-size: 1.5rem;
+    color: #333;
+  }
+
+  .label-content {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 20px;
+
+  }
+</style>
+
+<div class="label-container">
+  <div class="label-info">
+    <h1 class="label-title">Label Information: {{ active_label.name }}</h1>
+  </div>
+</div>
+<div class="label-content">
+  <div>{% include 'base/labels-component.html' %}</div>
+  <div>{% include 'base/tasks-component.html' %}</div>
+</div>
+{% endblock content %}

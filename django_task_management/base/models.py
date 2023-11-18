@@ -46,6 +46,7 @@ class Task(models.Model):
     labels = models.ManyToManyField(Label, related_name='tasks', blank=True)
     image_attachment = models.ImageField(upload_to='task_images/', null=True, blank=True)
     assigned_to = models.ManyToManyField(User, related_name='assigned_tasks', blank=True)
+    shared_with = models.ManyToManyField(User, related_name='tasks_shared_with', blank=True)
 
     class Meta:
         """
@@ -55,17 +56,6 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class SharedTask(Task):
-    """
-    Model to share task with different users
-    """
-    shared_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shared_tasks')
-    shared_with = models.ManyToManyField(User, related_name='tasks_shared_with')
-
-    def __str__(self):
-        return f"{self.title} with task id {self.id} shared by {self.shared_by.username}"
 
 class Comment(models.Model):
     """

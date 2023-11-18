@@ -117,13 +117,13 @@
 
 <div class="title__section">
   <h3>Personal Tasks</h3>
-  {% if tasks_by_user.count == 0 %}
+  {% if tasks_including_user.count == 0 %}
   <h4>No tasks have been created.</h4>
-  {% elif tasks_by_user.count == 1 %}
+  {% elif tasks_including_user.count == 1 %}
   <h4>1 task has been created.</h4>
   {% else %}
   <h4">
-    {{ tasks_by_user.count }} tasks have been created
+    {{ tasks_including_user.count }} tasks have been created
   </h4>
   {% endif %}
 
@@ -136,7 +136,7 @@
     <div class="tasks__container" ondrop="drop(event, 'NotStarted')" ondragover="allowDrop(event)">
         <ul class="tasks__column NotStarted">
       <h4>Not Started</h4>
-      {% for task in tasks_by_user %} {% if task.status == "NotStarted" %}
+      {% for task in tasks_including_user %} {% if task.status == "NotStarted" %}
       <li
         class="task-card"
         draggable="true"
@@ -152,6 +152,9 @@
         {% if task.due_date %}
         <p class="task-due-date">Due Date: {{ task.due_date }}</p>
         {% endif %}
+        {% if request.user in task.shared_with.all %}
+        <p class="task-shared-with">Shared by: {{ task.created_by.username }}</p>
+        {% endif %}
         <p class="task-created-at">
           Created: {{ task.created_at|timesince }} ago
         </p>
@@ -163,7 +166,7 @@
   <div class="tasks__container" ondrop="drop(event, 'Started')" ondragover="allowDrop(event)">
     <ul class="tasks__column Started">
       <h4>In Progress</h4>
-      {% for task in tasks_by_user %} {% if task.status == "Started" %}
+      {% for task in tasks_including_user %} {% if task.status == "Started" %}
       <li
         class="task-card"
         draggable="true"
@@ -190,7 +193,7 @@
   <div class="tasks__container" ondrop="drop(event, 'Completed')" ondragover="allowDrop(event)">
     <ul class="tasks__column Completed">
       <h4>Completed</h4>
-      {% for task in tasks_by_user %} {% if task.status == "Completed" %}
+      {% for task in tasks_including_user %} {% if task.status == "Completed" %}
       <li
         class="task-card"
         draggable="true"
@@ -209,6 +212,11 @@
         <p class="task-created-at">
           Created: {{ task.created_at|timesince }} ago
         </p>
+        {% if request.user in task.shared_with.all %}
+        <p class="task-shared-with">Shared by: {{ task.created_by }}</p>
+        {% else %}
+        <p>eleos</p>
+        {% endif %}
       </li>
       {% endif %} {% endfor %}
     </ul>
@@ -292,21 +300,6 @@
       },
     });
   }
-
-  // Add a click event listener to the task cards for changing status
-  $(document).on('click', '.task-card', function() {
-    console.log(this)
-    const taskId = $(this).data('task-id');
-    const currentStatus = $(this).data('task-status');
-    
-    // Prompt user to select a new status
-    const newStatus = prompt('Enter the new status (NotStarted, Started, Completed):', currentStatus);
-    if (newStatus && newStatus !== currentStatus) {
-      // Update the task status
-      updateTaskStatus(taskId, newStatus);
-    }
-  });
-
 
 function findColumnByStatus(status) {
   const statusLabel = STATUS_CHOICES.find(choice => choice.value === status)?.label;
