@@ -25,10 +25,12 @@
               <img src="{% static 'images/profile_pictures/dummy-avatar.svg' %}" alt="Dummy Profile Picture" width="50" height="50"/>
             {% endif %}
           </div>
-          <div class="header__user-details">
-            <p class="header__username">{{ request.user }}</p>
-            <p class="header__user-username">@{{ request.user.username }}</p>
-          </div>
+          <a href="{% url 'user-profile' request.user.id %}">
+            <div class="header__user-details">
+              <p class="header__username">{{ request.user }}</p>
+              <p class="header__user-username">@{{ request.user.username }}</p>
+            </div>
+          </a>
         {% endif %}
       </div>
     </div>

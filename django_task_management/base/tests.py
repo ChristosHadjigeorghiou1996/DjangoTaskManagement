@@ -1,5 +1,6 @@
 from django.db import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.urls import reverse
 from django.contrib.auth import authenticate
 from .models import User, Comment, Label, Task
 
@@ -157,3 +158,30 @@ class CalendarHelperTestCase(TestCase):
             date(2023, 11, x) for x in range(1, 30+1)
         ]
         self.assertEqual(CalendarHelper.populate_calendar_days_for_month(november_2023), expected_days_november_2023)
+
+
+class ProfileViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client = Client()
+
+    def test_profile_view_with_valid_user_id(self):
+        response = self.client.get(reverse('user-profile', args=[str(self.user.id)]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['user_profile'], self.user)
+
+    def test_profile_view_with_invalid_user_id(self):
+        response = self.client.get(reverse('user-profile', args=['999999999']))
+        self.assertEqual(response.status_code, 404)
+
+    def test_profile_view_for_authenticated_user(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('user-profile', args=[str(self.user.id)]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['user_profile'], self.user)
+
+    def test_profile_view_for_unauthenticated_user(self):
+        response = self.client.get(reverse('user-profile', args=[str(self.user.id)]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['user_profile'], self.user)

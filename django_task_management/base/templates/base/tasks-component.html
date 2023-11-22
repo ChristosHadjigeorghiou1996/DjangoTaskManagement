@@ -148,12 +148,12 @@
       >
         <p class="task-title">{{ task.title }}</p>
         <p class="task-description">Description {{ task.description }}</p>
-        <p class="task-status">Status: {{ task.status }}</p>
         {% if task.due_date %}
         <p class="task-due-date">Due Date: {{ task.due_date }}</p>
         {% endif %}
         {% if request.user in task.shared_with.all %}
-        <p class="task-shared-with">Shared by: {{ task.created_by.username }}</p>
+        <p class="task-shared-with">
+          Shared by: @<a href="{% url 'user-profile' task.created_by.id %}">{{ task.created_by }}</a></p>
         {% endif %}
         <p class="task-created-at">
           Created: {{ task.created_at|timesince }} ago
@@ -182,6 +182,10 @@
         {% if task.due_date %}
         <p class="task-due-date">Due Date: {{ task.due_date }}</p>
         {% endif %}
+        {% if request.user in task.shared_with.all %}
+        <p class="task-shared-with">
+          Shared by: @<a href="{% url 'user-profile' task.created_by.id %}">{{ task.created_by }}</a></p>
+        {% endif %}
         <p class="task-created-at">
           Created: {{ task.created_at|timesince }} ago
         </p>
@@ -209,14 +213,13 @@
         {% if task.due_date %}
         <p class="task-due-date">Due Date: {{ task.due_date }}</p>
         {% endif %}
+        {% if request.user in task.shared_with.all %}
+        <p class="task-shared-with">
+          Shared by: @<a href="{% url 'user-profile' task.created_by.id %}">{{ task.created_by }}</a></p>
+        {% endif %}
         <p class="task-created-at">
           Created: {{ task.created_at|timesince }} ago
         </p>
-        {% if request.user in task.shared_with.all %}
-        <p class="task-shared-with">Shared by: {{ task.created_by }}</p>
-        {% else %}
-        <p>eleos</p>
-        {% endif %}
       </li>
       {% endif %} {% endfor %}
     </ul>
