@@ -1,0 +1,96 @@
+{% extends 'main.html' %} {% block content %}
+<style>
+  .back-button {
+    cursor: pointer;
+    float: left; /* Float the Back button to the left */
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    height: 95%;
+  }
+
+  .back-button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  .back-button:hover {
+    background-color: #398cc4;
+  }
+
+  .profile-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f2f2f2;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    
+  }
+
+  .profile-info {
+    margin-left: 40px;
+  }
+
+  .profile-username {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    margin-right: auto;
+  }
+
+  .information-message {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #e95949;
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<div class="profile-container">
+  <a href="{{request.META.HTTP_REFERER}}" class="back-button">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      ></path>
+    </svg>
+    Back
+  </a>
+  <div class="profile-info">
+    {% if user_profile.name %}
+    <p class="profile-username">
+      User profile of {{ user_profile.name }} @{{ user_profile.username }}
+    </p>
+    {% else %}
+    <p class="profile-username">User profile of {{ user_profile.username }}</p>
+    {% endif %}
+  </div>
+</div>
+{% if request.user == user_profile %}
+<div>{% include 'base/tasks-component.html' %}</div>
+{% else %}
+<div class="information-message">
+  Information is restricted to the user of the profile only.
+</div>
+{% endif %} {% endblock content %}

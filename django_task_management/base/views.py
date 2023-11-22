@@ -8,7 +8,7 @@ from django.contrib import messages
   
 from datetime import date
 
-from .models import Task, Label, Comment
+from .models import Task, Label, Comment, User
 
 from .helpers.CalendarHelper import CalendarHelper
 
@@ -94,6 +94,26 @@ def label(request: HttpRequest, id: str) -> HttpResponse:
         "tasks_including_user":tasks_including_user,
     }
     return render(request, 'base/label.html', context)
+
+def profile(request: HttpRequest, id: str) -> HttpResponse:
+    try:
+        user_profile = User.objects.get(pk=id)
+    except User.DoesNotExist:
+        
+        raise Http404(f"User with id {id} does not exist")
+
+    labels_with_task_count = Label.objects.annotate(tasks_relating_to_user_count=Count('tasks', filter=Q(tasks__created_by=user_profile) | Q(tasks__shared_with=user_profile)))
+    total_task_count_labels_relating_to_user = labels_with_task_count.aggregate(Sum('tasks_relating_to_user_count'))['tasks_relating_to_user_count__sum']
+    tasks_by_user = Task.objects.filter(created_by=user_profile).order_by("due_date")
+    tasks_shared_by_others_with = Task.objects.filter(shared_with=user_profile).order_by("due_date")
+    tasks_including_user = (tasks_by_user | tasks_shared_by_others_with)
+    context = {
+        'user_profile': user_profile,
+        'total_task_count_labels_relating_to_user':total_task_count_labels_relating_to_user,
+        "labels_with_task_count": labels_with_task_count,
+        "tasks_including_user":tasks_including_user,
+    }
+    return render(request, 'base/user-profile.html', context)
 
 def update_task_status(request, task_id: str):
     if request.method == 'POST':
