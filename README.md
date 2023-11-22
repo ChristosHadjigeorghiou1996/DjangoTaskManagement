@@ -30,6 +30,10 @@ Initial idea is to have user be able to create tasks, share them with colleagues
 Initial view of home page with flash messages when dragging and dropping the tasks
 ![First version of home view](src/progress/flash%20messages.png)
 
+Initial view of profile with option to go back using referer and if not request.user then tasks section becomes inaccessible
+![image](https://github.com/ChristosHadjigeorghiou1996/DjangoTaskManagement/assets/87614879/a1e190d5-ff1c-414d-929b-d397b5612163)
+
+
 # Final notes
 This project is just a simple task management to get accustomed with django.
 
